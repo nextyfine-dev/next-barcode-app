@@ -4,6 +4,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { useState } from "react";
 import { NxtButton } from "../../../components/common";
 import { shareAsync } from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 const BarcodeImg = require("./../../../assets/barcode.png");
 
 export default function CreatedBarcode({ route, navigation }) {
@@ -26,8 +27,21 @@ export default function CreatedBarcode({ route, navigation }) {
   const printToFile = async () => {
     startTransition(true);
     const { uri } = await Print.printToFileAsync({ html });
+    const pdfName = `${uri.slice(0, uri.lastIndexOf("/") + 1)}${
+      data.file.productId
+    }-${data.file.name}.pdf`;
+
+    await FileSystem.moveAsync({
+      from: uri,
+      to: pdfName,
+    });
+
     startTransition(false);
-    await shareAsync(uri, { UTI: ".pdf", mimeType: "application/pdf" });
+    await shareAsync(pdfName, {
+      UTI: ".pdf",
+      mimeType: "application/pdf",
+      dialogTitle: "barcode",
+    });
   };
 
   return (

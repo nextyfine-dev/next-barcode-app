@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
-import { signIn, signUp, verify } from "../../services/authService";
+import { jwtLogin, signIn, signUp, verify } from "../../services/authService";
 
 const initialState = {
   isLogin: false,
@@ -15,6 +15,19 @@ export const login = createAsyncThunk(
   async (values, { rejectWithValue }) => {
     try {
       const data = await signIn(values);
+      if (data.status !== "success") return rejectWithValue(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response.data || error);
+    }
+  }
+);
+
+export const loginWithToken = createAsyncThunk(
+  "auth/login-with-token",
+  async (values, { rejectWithValue }) => {
+    try {
+      const data = await jwtLogin(values);
       if (data.status !== "success") return rejectWithValue(data);
       return data;
     } catch (error) {
@@ -56,6 +69,7 @@ const authSlice = createSlice({
     clearAuthState: (state) => {
       state.isLogin = false;
       state.user = {};
+      state.successMessage = "";
       state.isFetching = false;
       state.isError = false;
       state.error = null;
@@ -82,6 +96,34 @@ const authSlice = createSlice({
       return state;
     },
     [login.rejected]: (state, { payload }) => {
+      state.isLogin = false;
+      state.user = {};
+      state.isFetching = false;
+      state.isError = true;
+      state.error = payload;
+      state.successMessage = "";
+      return state;
+    },
+
+    [loginWithToken.pending]: (state) => {
+      state.isFetching = true;
+      state.isLogin = false;
+      state.isError = false;
+      state.user = {};
+      state.successMessage = "";
+
+      return state;
+    },
+    [loginWithToken.fulfilled]: (state, { payload }) => {
+      state.isLogin = true;
+      state.user = payload.data.user;
+      state.successMessage = payload.message;
+      state.isFetching = false;
+      state.isError = false;
+      state.error = null;
+      return state;
+    },
+    [loginWithToken.rejected]: (state, { payload }) => {
       state.isLogin = false;
       state.user = {};
       state.isFetching = false;

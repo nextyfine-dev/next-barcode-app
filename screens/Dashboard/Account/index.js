@@ -8,14 +8,22 @@ import {
   ScrollView,
   VStack,
 } from "native-base";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
 import omit from "lodash/omit";
-import { NxtCard, NxtFormLabel, NxtText } from "../../../components/common";
+import {
+  NxtButton,
+  NxtCard,
+  NxtFormLabel,
+  NxtText,
+} from "../../../components/common";
 import { THEME_COLORS } from "../../../config/constants";
+import { logOut } from "../../../services/authService";
+import { clearAuthState } from "../../../redux/reducers/authSlice";
 
-export default function Account() {
+export default function Account({ navigation }) {
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   return (
     <ScrollView>
@@ -35,6 +43,7 @@ export default function Account() {
                   "createdAt",
                   "updatedAt",
                   "userRole",
+                  "password",
                 ])
               ).map((u, i) => (
                 <VStack key={i} mt={2}>
@@ -45,11 +54,19 @@ export default function Account() {
                     borderRadius={10}
                     borderColor={THEME_COLORS.PRIMARY_COLOR}
                     bg="#fff"
-                    isDisabled={true}
                   />
                 </VStack>
               ))}
             </VStack>
+            <NxtButton
+              text={"Log Out"}
+              mt={5}
+              bg="red.500"
+              onPress={async () => {
+                await logOut();
+                dispatch(clearAuthState());
+              }}
+            />
           </NxtCard>
         </Center>
       </Box>

@@ -10,3 +10,7 @@ export const setStorage = catchAsync(async (storage, value) => {
   const jsonValue = JSON.stringify(value);
   await AsyncStorage.setItem(storage, jsonValue);
 });
+
+export const removeFromStorage = catchAsync(async (storage) => {
+  await AsyncStorage.removeItem(storage);
+});

@@ -13,11 +13,26 @@ import { FontAwesome } from "@expo/vector-icons";
 // import * as Application from 'expo-application';
 
 import { THEME_COLORS, USER_ROLE } from "../config/constants.js";
+import { getStorage } from "../services/storageService.js";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loginWithToken } from "../redux/reducers/authSlice.js";
 
 const Main = ({ navigation }) => {
-  // console.log("Device", Device);
-  // console.log("Network", Network);
-  // console.log("Application", Application);
+  const dispatch = useDispatch();
+
+  const logInWithToken = async () => {
+    try {
+      const token = await getStorage("@token");
+      if (token) {
+        dispatch(loginWithToken(token));
+      }
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    logInWithToken();
+  }, []);
 
   return (
     <Box flex={1} safeAreaTop alignSelf="center" w="100%" background="#fff">

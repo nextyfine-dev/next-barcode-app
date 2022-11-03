@@ -17,7 +17,7 @@ export default function Home({ navigation }) {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    wait(500).then(() => setRefreshing(false));
   }, []);
 
   return (

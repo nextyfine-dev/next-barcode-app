@@ -9,15 +9,19 @@ export default function BarcodeAndProductDetails({ route }) {
 
   useEffect(() => {
     if (detail) {
-      const data = omit(detail, ["Product"]);
-      setData({ params: { data: { file: { ...data } } } });
+      if (detail.Files) {
+        setData({ params: { data: { file: detail.Files[0] } } });
+      } else {
+        const data = omit(detail, ["Product"]);
+        setData({ params: { data: { file: { ...data } } } });
+      }
     }
   }, [detail]);
 
   return (
     <>
       <CreatedBarcode route={data} />
-      <BarcodeDetails data={detail.Product} />
+      <BarcodeDetails data={detail.Product || detail} />
     </>
   );
 }

@@ -56,6 +56,7 @@ export default function Scanner() {
           autoFocus={true}
           focusDepth={1}
           type={type}
+          flashMode={flash ? "torch" : "off"}
           style={{ flex: 1, justifyContent: "space-between" }}
         >
           <View

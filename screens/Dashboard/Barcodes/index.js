@@ -9,26 +9,61 @@ import {
 } from "native-base";
 import { useEffect, useState } from "react";
 import { NxtText } from "../../../components/common";
-import { getProductBarCodes } from "../../../services/productService";
+import useNxtToast from "../../../hooks/useNxtToast";
+import {
+  getProductBarCodes,
+  getProductDetails,
+} from "../../../services/productService";
 import ProductBarcode from "./ProductBarcode";
 
 export default function BarCodes({ refreshing, navigation }) {
-  const [details, setDetails] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [isFetching, setIsFetching] = useState(false);
 
-  const getDetails = async () => {
+  const [showToast] = useNxtToast();
+
+  const getAllProductDetails = async () => {
+    setIsFetching(true);
     const res = await getProductBarCodes();
     if (res && res.status === "success") {
-      setDetails(res.data.barcodes);
+      setProducts(res.data.barcodes);
+    }
+    setIsFetching(false);
+  };
+
+  const searchProduct = async (value) => {
+    setSearchValue(value);
+    setIsFetching(true);
+    if (value && value.length > 0) {
+      const res = await getProductDetails(value);
+      if (res && res.status === "success") {
+        setProducts(res.data.products);
+        setIsFetching(false);
+      } else {
+        showToast("error", res.message);
+        setIsFetching(false);
+      }
+    } else {
+      await getAllProductDetails();
     }
   };
+
   useEffect(() => {
-    getDetails();
+    getAllProductDetails();
+    setSearchValue("");
   }, [refreshing, navigation]);
 
   return (
-    <Box p={1} mt={4}>
-      {details && details.length > 0 && (
-        <ProductBarcode navigation={navigation} products={details} />
+    <Box p={1}>
+      {products && (
+        <ProductBarcode
+          navigation={navigation}
+          searchProduct={searchProduct}
+          products={products}
+          searchValue={searchValue}
+          isFetching={isFetching}
+        />
       )}
     </Box>
   );

@@ -11,7 +11,8 @@ export const getProductDetails = catchAsync(async (id) => {
   return data;
 });
 
-export const getProductBarCodes = catchAsync(async () => {
-  const { data } = await http.get(`/barcode/get`);
+export const getProductBarCodes = catchAsync(async (page = 1, limit = 10) => {
+  const { data } = await http.get(`/barcode/get?limit=${limit}&page=${page}`);
   return data;
 });
+

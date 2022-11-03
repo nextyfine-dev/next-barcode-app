@@ -28,6 +28,8 @@ export default function BarcodeDetails({ setData, data }) {
       "isLoved",
       "isPined",
       "updatedAt",
+      "Files",
+      "files",
     ]);
     return values;
   };
@@ -35,8 +37,8 @@ export default function BarcodeDetails({ setData, data }) {
   const getDetails = async () => {
     const res = await getProductDetails(data);
     if (res && res.status === "success") {
-      showToast("success", res.message);
-      const values = getValues(res.data.product);
+      res.data.products.length > 0 && showToast("success", res.message);
+      const values = getValues(res.data.products[0]);
       setDetails(values);
     } else {
       showToast("error", res.message || "Data not found!");

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import BarcodeDetails from "./BarcodeDetails";
-import CreatedBarcode from "./CreatedBarcode";
+import ShowCreatedBarcode from "./ShowCreatedBarcode";
 import omit from "lodash/omit";
 
-export default function BarcodeAndProductDetails({ route }) {
+export default function BarcodeAndProductDetails({ route, navigation }) {
   const { detail } = route.params;
   const [data, setData] = useState({ params: { data: { file: {} } } });
 
@@ -20,7 +20,7 @@ export default function BarcodeAndProductDetails({ route }) {
 
   return (
     <>
-      <CreatedBarcode route={data} />
+      <ShowCreatedBarcode route={data} navigation={navigation} />
       <BarcodeDetails data={detail.Product || detail} />
     </>
   );

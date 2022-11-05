@@ -11,15 +11,15 @@ import {
   Box,
   Center,
   Divider,
-  HStack,
-  Icon,
-  Image,
-  Pressable,
-  Text,
+  // HStack,
+  // Icon,
+  // Image,
+  // Pressable,
+  // Text,
   VStack,
 } from "native-base";
-import { MaterialIcons } from "@expo/vector-icons";
-import { AntDesign } from "@expo/vector-icons";
+// import { MaterialIcons } from "@expo/vector-icons";
+// import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { defaultNavOptions } from "../models/options";
@@ -35,9 +35,10 @@ import { THEME_COLORS } from "../config/constants";
 import Account from "../screens/Dashboard/Account";
 import Scanner from "../screens/Dashboard/Barcodes/Scanner";
 import CreateProduct from "../screens/Dashboard/Products/CreateProduct";
-import CreatedBarcode from "../screens/Dashboard/Barcodes/CreatedBarcode";
+import ShowCreatedBarcode from "../screens/Dashboard/Barcodes/ShowCreatedBarcode";
 import BarcodeAndProductDetails from "../screens/Dashboard/Barcodes/BarcodeAndProductDetails";
 import History from "../screens/Dashboard/History";
+import CreateCustomer from "../screens/Dashboard/Customer/CreateCustomer";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -97,12 +98,14 @@ const TabNavigation = () => (
             iconName = focused ? "barcode-scan" : "barcode-scan";
             break;
 
-          case "History":
-            iconName = focused ? "history" : "history";
+          case "CreateCustomer":
+            iconName = focused ? "account-edit" : "account-edit-outline";
+            size = 33;
             break;
 
           case "Account":
-            iconName = focused ? "account" : "account";
+            iconName = focused ? "account-circle" : "account-circle-outline";
+            size = 33;
             break;
 
           default:
@@ -136,8 +139,8 @@ const TabNavigation = () => (
       options={defaultNavOptions()}
     />
     <Tab.Screen
-      name="History"
-      component={History}
+      name="CreateCustomer"
+      component={CreateCustomer}
       options={defaultNavOptions()}
     />
     <Tab.Screen
@@ -241,8 +244,8 @@ const Navigation = () => {
             options={defaultNavOptions()}
           />
           <Stack.Screen
-            name="createdBarcode"
-            component={CreatedBarcode}
+            name="ShowCreatedBarcode"
+            component={ShowCreatedBarcode}
             options={defaultNavOptions()}
           />
           <Stack.Screen

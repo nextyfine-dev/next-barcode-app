@@ -1,13 +1,14 @@
-import { Box, Center, Pressable, Image } from "native-base";
+import { Box, Center, Image, HStack } from "native-base";
 import * as Print from "expo-print";
 import Spinner from "react-native-loading-spinner-overlay";
 import { useState } from "react";
-import { NxtButton } from "../../../components/common";
+import { NxtButton, NxtText } from "../../../components/common";
 import { shareAsync } from "expo-sharing";
 import * as FileSystem from "expo-file-system";
+import { THEME_COLORS } from "../../../config/constants";
 const BarcodeImg = require("./../../../assets/barcode.png");
 
-export default function CreatedBarcode({ route, navigation }) {
+export default function ShowCreatedBarcode({ route, navigation }) {
   const [isPending, startTransition] = useState(false);
 
   const { data } = route.params;
@@ -47,17 +48,42 @@ export default function CreatedBarcode({ route, navigation }) {
   return (
     <Box>
       {data && data.file && data.file.code && (
-        <Center mt={20}>
+        <Center mt={20} justifyContent="center" alignItems="center">
           <Spinner
             visible={isPending}
             textContent={"Please wait... "}
             textStyle={{ color: "#fff" }}
           />
-          <Image source={BarcodeImg} width={20} height={10} alt="barcode" />
-
-          <Pressable mt={5}>
+          <Image source={BarcodeImg} width={40} height={20} alt="barcode" />
+          <NxtText
+            text={data.file.productId}
+            color={THEME_COLORS.DARK_COLOR}
+            fontSize={12}
+          />
+          <NxtText
+            text={data.file.name}
+            color={THEME_COLORS.MAIN_DARK_COLOR}
+            fontSize={18}
+          />
+          <HStack
+            space={2}
+            flexWrap="wrap"
+            m={5}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <NxtButton
+              text={"Create New"}
+              onPress={() => navigation.navigate("CreateBarcode")}
+              bg={"green.500"}
+            />
             <NxtButton text={"Print Barcode"} onPress={printToFile} />
-          </Pressable>
+            <NxtButton
+              text={"Go Home"}
+              onPress={() => navigation.navigate("Home")}
+              bg={"red.500"}
+            />
+          </HStack>
         </Center>
       )}
     </Box>

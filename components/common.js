@@ -11,6 +11,7 @@ import {
   Select,
   HStack,
   Icon,
+  IconButton,
 } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -232,6 +233,23 @@ export const NxtButton = ({
         {text}
       </Text>
     </Button>
+  );
+};
+
+export const NxtIconBtn = () => {
+  return (
+    <IconButton
+      mt={7}
+      
+      onPress={() => setShowOptions(!showOptions)}
+      icon={
+        <Icon
+          as={<Ionicons />}
+          name={showOptions ? "settings" : "settings-outline"}
+          size={30}
+        />
+      }
+    />
   );
 };
 

@@ -17,7 +17,12 @@ import {
 import Spinner from "react-native-loading-spinner-overlay";
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import { NxtButton, NxtText, RenderInput } from "../../../components/common";
+import {
+  NxtButton,
+  NxtHeading,
+  NxtText,
+  RenderInput,
+} from "../../../components/common";
 import { THEME_COLORS } from "../../../config/constants";
 import { colors } from "./../../../models/ColorModel";
 import PrintBarcodes from "./PrintBarcodes";
@@ -187,9 +192,10 @@ const ProductBarcode = ({
                       mb={2}
                       onChange={() => toggleCheck(item)}
                       isChecked={checkIsItemSelected(item)}
-                      accessibilityLabel={item.productId}
+                      accessibilityLabel={`${item.productId}`}
                       borderWidth={1}
                       width={140}
+                      ariaLabel={`${item.productId}`}
                     />
                   )}
                   <Image

@@ -30,6 +30,11 @@ export default function BarcodeDetails({ setData, data }) {
       "updatedAt",
       "Files",
       "files",
+      "fileId",
+      "type",
+      "code",
+      "fileType",
+      "Customer",
     ]);
     return values;
   };

@@ -11,7 +11,7 @@ const BarcodeImg = require("./../../../assets/barcode.png");
 export default function ShowCreatedBarcode({ route, navigation }) {
   const [isPending, startTransition] = useState(false);
 
-  const { data } = route.params;
+  const { data, isCustomer } = route.params;
   const html = `
 <html>
   <head>
@@ -29,7 +29,7 @@ export default function ShowCreatedBarcode({ route, navigation }) {
     startTransition(true);
     const { uri } = await Print.printToFileAsync({ html });
     const pdfName = `${uri.slice(0, uri.lastIndexOf("/") + 1)}${
-      data.file.productId
+      data.file.productId || data.file.customerId
     }-${data.file.name}.pdf`;
 
     await FileSystem.moveAsync({
@@ -56,7 +56,7 @@ export default function ShowCreatedBarcode({ route, navigation }) {
           />
           <Image source={BarcodeImg} width={40} height={20} alt="barcode" />
           <NxtText
-            text={data.file.productId}
+            text={data.file.productId || data.file.customerId}
             color={THEME_COLORS.DARK_COLOR}
             fontSize={12}
           />
@@ -74,7 +74,11 @@ export default function ShowCreatedBarcode({ route, navigation }) {
           >
             <NxtButton
               text={"Create New"}
-              onPress={() => navigation.navigate("CreateBarcode")}
+              onPress={() =>
+                !isCustomer
+                  ? navigation.navigate("CreateBarcode")
+                  : navigation.navigate("CreateCustomer")
+              }
               bg={"green.500"}
             />
             <NxtButton text={"Print Barcode"} onPress={printToFile} />

@@ -4,9 +4,14 @@ import { useEffect, useState } from "react";
 import { NxtButton, NxtText } from "../../../components/common";
 import useNxtToast from "../../../hooks/useNxtToast";
 import {
+  getAllCustomers,
+  getCustomerDetails,
+} from "../../../services/customerService";
+import {
   getProductBarCodes,
   getProductDetails,
 } from "../../../services/productService";
+import CustomerBarcode from "./CustomerBarcode";
 import ProductBarcode from "./ProductBarcode";
 
 export default function BarCodes({
@@ -15,6 +20,7 @@ export default function BarCodes({
   route,
   type,
   setSelectedProducts,
+  isCustomer,
 }) {
   const [data, setData] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -26,25 +32,30 @@ export default function BarCodes({
 
   const [showToast] = useNxtToast();
 
-  const getAllProductDetails = async (
+  const getAllDetails = async (
     page = currentPage,
     limit = currentLimit,
     sortBy = sortBy,
     sortType = sortType
   ) => {
     setIsFetching(true);
-    const res = await getProductBarCodes(page, limit, sortBy, sortType);
+    const res = !isCustomer
+      ? await getProductBarCodes(page, limit, sortBy, sortType)
+      : await getAllCustomers(page, limit, sortBy, sortType);
+
     if (res && res.status === "success") {
       setData(res.data);
     }
     setIsFetching(false);
   };
 
-  const searchProduct = async (value) => {
+  const search = async (value) => {
     setSearchValue(value);
     setIsFetching(true);
     if (value && value.length > 0) {
-      const res = await getProductDetails(value);
+      const res = !isCustomer
+        ? await getProductDetails(value)
+        : await getCustomerDetails(value);
       if (res && res.status === "success") {
         setData(res.data);
         setIsFetching(false);
@@ -53,12 +64,12 @@ export default function BarCodes({
         setIsFetching(false);
       }
     } else {
-      await getAllProductDetails();
+      await getAllDetails();
     }
   };
 
   useEffect(() => {
-    getAllProductDetails(currentPage, currentLimit, sortBy, sortType);
+    getAllDetails(currentPage, currentLimit, sortBy, sortType);
     setSearchValue("");
   }, [
     refreshing,
@@ -81,10 +92,10 @@ export default function BarCodes({
 
   return (
     <Box p={1}>
-      {data && (data.products || data.barcodes) && (
+      {!isCustomer && data && (data.products || data.barcodes) && (
         <ProductBarcode
           navigation={navigation}
-          searchProduct={searchProduct}
+          searchProduct={search}
           products={data.products || data.barcodes}
           searchValue={searchValue}
           isFetching={isFetching}
@@ -93,6 +104,20 @@ export default function BarCodes({
           type={type}
           setSelectedProducts={setSelectedProducts}
           setCurrentLimit={setCurrentLimit}
+        />
+      )}
+
+      {isCustomer && data && (data.customers || data.barcodes) && (
+        <CustomerBarcode
+          navigation={navigation}
+          customers={data.customers || data.barcodes}
+          setCurrentLimit={setCurrentLimit}
+          isFetching={isFetching}
+          setSortBy={setSortBy}
+          setSortType={setSortType}
+          type={type}
+          searchCustomer={search}
+          searchValue={searchValue}
         />
       )}
 

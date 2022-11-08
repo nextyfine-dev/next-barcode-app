@@ -49,7 +49,7 @@ const PrintBarcodes = ({ barcodes, isPrinting, setIsPrinting }) => {
   };
 
   useEffect(() => {
-    if (barcodes) {
+    if (barcodes && isPrinting) {
       const codes = [];
       for (const barcode of barcodes) {
         codes.push(`<img
@@ -58,7 +58,7 @@ const PrintBarcodes = ({ barcodes, isPrinting, setIsPrinting }) => {
       }
       setImgs(codes.join(" "));
     }
-  }, [barcodes.length]);
+  }, [barcodes.length, isPrinting]);
 
   return (
     <Modal

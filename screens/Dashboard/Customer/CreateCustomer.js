@@ -23,10 +23,28 @@ import {
 import { THEME_COLORS } from "../../../config/constants";
 import { colors } from "../../../models/ColorModel";
 import BarCodes from "../Barcodes";
+import useNxtToast from "../../../hooks/useNxtToast";
+import { validationSchema, initialValues } from "../../../models/CustomerModel";
+import Spinner from "react-native-loading-spinner-overlay";
+import { filterValues } from "../../../services/filterService";
+import { createCustomer } from "../../../services/customerService";
 
 const CreateCustomer = ({ navigation }) => {
   const [isSelectProduct, setIsSelectProduct] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const [showToast] = useNxtToast();
+  const [values, setValues] = useState(initialValues);
+  const [isPending, startTransition] = useState(false);
+
+  const validateValues = () => {
+    for (const key in validationSchema) {
+      if (!validationSchema[key].allowNull && values[key]?.length === 0) {
+        return validationSchema[key].message;
+      }
+    }
+    return false;
+  };
 
   useEffect(() => {
     if (selectedProducts && selectedProducts.length > 0) {
@@ -40,9 +58,54 @@ const CreateCustomer = ({ navigation }) => {
     setSelectedProducts(allItems);
   };
 
+  const handleChange = (value, name) => {
+    setValues((prev) => {
+      const data = { ...prev };
+      data[name] = value;
+      return data;
+    });
+  };
+
+  const handleSubmit = async () => {
+    startTransition(true);
+    const isError = validateValues();
+    if (isError) {
+      startTransition(false);
+      showToast("error", isError);
+    } else {
+      let newValues = filterValues(values);
+      let productIds;
+      if (selectedProducts && selectedProducts.length > 0) {
+        productIds = selectedProducts.map((product) => product.productId);
+      }
+      newValues = {
+        ...newValues,
+        productIds: JSON.stringify(productIds),
+      };
+      const res = await createCustomer(newValues);
+      if (res && res.status === "success") {
+        startTransition(false);
+        showToast("success", res.message);
+        setValues(initialValues);
+        const data = { ...res.data, file: res.data.customer };
+        setTimeout(() => {
+          navigation.navigate("ShowCreatedBarcode", { data, isCustomer: true });
+        }, 500);
+      } else {
+        startTransition(false);
+        showToast("error", res.message);
+      }
+    }
+  };
+
   return (
     <ScrollView>
       <Center>
+        <Spinner
+          visible={isPending}
+          textContent={"Creating Customer and Barcode... "}
+          textStyle={{ color: "#fff" }}
+        />
         <NxtCard mt={5} pb={5} mb={8}>
           <NxtHeading text={"Create a New Customer"} textAlign="center" />
 
@@ -51,10 +114,14 @@ const CreateCustomer = ({ navigation }) => {
               label={"Name"}
               required
               placeholder="Enter customer name"
+              onChangeText={(value) => handleChange(value, "name")}
+              value={values["name"]}
             />
             <RenderInput
               label={"Phone Number"}
               required
+              onChangeText={(value) => handleChange(value, "phoneNumber")}
+              value={values["phoneNumber"]}
               placeholder="Enter customer's mobile number"
             />
             <RenderInput label={"Email"} placeholder="Enter customer's email" />
@@ -67,7 +134,7 @@ const CreateCustomer = ({ navigation }) => {
                 <HStack flexWrap="wrap" justifyContent={"center"}>
                   {selectedProducts.map((product, i) => (
                     <View
-                      key={product.productId || 1}
+                      key={product.productId || i}
                       justifyContent={"center"}
                       borderRadius={5}
                       height={140}
@@ -124,14 +191,18 @@ const CreateCustomer = ({ navigation }) => {
               label={"Address"}
               required
               textArea
+              onChangeText={(value) => handleChange(value, "address")}
+              value={values["address"]}
               placeholder={"Enter customer's address"}
             />
             <RenderInput
               label={"More Details"}
               textArea
+              onChangeText={(value) => handleChange(value, "details")}
+              value={values["details"]}
               placeholder={"Enter more details"}
             />
-            <NxtButton text="Create Customer Barcode" />
+            <NxtButton text="Create Customer Barcode" onPress={handleSubmit} />
           </VStack>
         </NxtCard>
       </Center>

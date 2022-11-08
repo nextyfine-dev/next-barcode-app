@@ -4,16 +4,19 @@ import ShowCreatedBarcode from "./ShowCreatedBarcode";
 import omit from "lodash/omit";
 
 export default function BarcodeAndProductDetails({ route, navigation }) {
-  const { detail } = route.params;
-  const [data, setData] = useState({ params: { data: { file: {} } } });
+  const { detail, isCustomer } = route.params;
+
+  const [data, setData] = useState({
+    params: { data: { file: {} }, isCustomer },
+  });
 
   useEffect(() => {
     if (detail) {
       if (detail.Files) {
-        setData({ params: { data: { file: detail.Files[0] } } });
+        setData({ params: { data: { file: detail.Files[0] }, isCustomer } });
       } else {
         const data = omit(detail, ["Product"]);
-        setData({ params: { data: { file: { ...data } } } });
+        setData({ params: { data: { file: { ...data } }, isCustomer } });
       }
     }
   }, [detail]);

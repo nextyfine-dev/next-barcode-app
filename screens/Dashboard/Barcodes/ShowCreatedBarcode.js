@@ -6,12 +6,16 @@ import { NxtButton, NxtText } from "../../../components/common";
 import { shareAsync } from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { THEME_COLORS } from "../../../config/constants";
+import { deleteProduct } from "../../../services/productService";
+import useNxtToast from "../../../hooks/useNxtToast";
+import { deleteCustomer } from "../../../services/customerService";
 const BarcodeImg = require("./../../../assets/barcode.png");
 
-export default function ShowCreatedBarcode({ route, navigation }) {
+export default function ShowCreatedBarcode({ route, navigation, customer, cProducts, product }) {
   const [isPending, startTransition] = useState(false);
+  const [showToast] = useNxtToast();
 
-  const { data, isCustomer } = route.params;
+  const { data, isCustomer, isCreated } = route.params;
   const html = `
 <html>
   <head>
@@ -28,9 +32,8 @@ export default function ShowCreatedBarcode({ route, navigation }) {
   const printToFile = async () => {
     startTransition(true);
     const { uri } = await Print.printToFileAsync({ html });
-    const pdfName = `${uri.slice(0, uri.lastIndexOf("/") + 1)}${
-      data.file.productId || data.file.customerId
-    }-${data.file.name}.pdf`;
+    const pdfName = `${uri.slice(0, uri.lastIndexOf("/") + 1)}${data.file.productId || data.file.customerId
+      }-${data.file.name}.pdf`;
 
     await FileSystem.moveAsync({
       from: uri,
@@ -44,6 +47,31 @@ export default function ShowCreatedBarcode({ route, navigation }) {
       dialogTitle: "barcode",
     });
   };
+
+  const showResMsg = (res) => {
+    if (res && res.status === "success") {
+      startTransition(false)
+      showToast("success", res.message);
+      setTimeout(() => {
+        navigation.navigate("Home")
+      }, 1000);
+    } else {
+      startTransition(false)
+      showToast("error", res.message);
+    }
+  }
+
+  const deleteBarcode = async (id, type = "product") => {
+    startTransition(true)
+    if (type === "product") {
+      const res = await deleteProduct(id);
+      showResMsg(res)
+    } else if (type === "customer") {
+      const res = await deleteCustomer(id);
+      showResMsg(res)
+
+    }
+  }
 
   return (
     <Box>
@@ -66,11 +94,9 @@ export default function ShowCreatedBarcode({ route, navigation }) {
             fontSize={18}
           />
           <HStack
-            space={2}
+            // space={2}
             flexWrap="wrap"
-            m={5}
-            justifyContent="center"
-            alignItems="center"
+            m={3}
           >
             <NxtButton
               text={"Create New"}
@@ -80,13 +106,38 @@ export default function ShowCreatedBarcode({ route, navigation }) {
                   : navigation.navigate("CreateCustomer")
               }
               bg={"green.500"}
+              m={1}
             />
-            <NxtButton text={"Print Barcode"} onPress={printToFile} />
+            <NxtButton text={"Print Barcode"} onPress={printToFile} m={1} />
             <NxtButton
               text={"Go Home"}
               onPress={() => navigation.navigate("Home")}
-              bg={"red.500"}
+              bg={"yellow.500"}
+              m={1}
             />
+            {!isCreated && <NxtButton
+              text={isCustomer ? "Update Customer" : "Update Product"}
+              onPress={async () => !isCustomer ? navigation.navigate("CreateBarcode", {
+                isUpdate: true,
+                product
+              })
+                : navigation.navigate("UpdateCustomer", {
+                  isUpdate: true,
+                  cProducts,
+                  customer
+                })}
+              bg={"blue.500"}
+              m={1}
+            />}
+
+            {!isCreated && <NxtButton
+              text={isCustomer ? "Delete Customer" : "Delete Product"}
+              onPress={async () => isCustomer ? await deleteBarcode(data.file.customerId, "customer") : await deleteBarcode(data.file.productId)}
+              bg={"red.500"}
+              m={1}
+            />}
+
+
           </HStack>
         </Center>
       )}

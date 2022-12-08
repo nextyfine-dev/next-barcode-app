@@ -6,10 +6,7 @@ import { RefreshControl } from "react-native";
 import { USER_ROLE } from "../../../config/constants";
 import AdminHome from "./AdminHome";
 import EmployeeHome from "./EmployeeHome";
-
-const wait = (timeout) => {
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-};
+import { wait } from "../../../services";
 
 export default function Home({ navigation }) {
   const { user } = useSelector((state) => state.auth);

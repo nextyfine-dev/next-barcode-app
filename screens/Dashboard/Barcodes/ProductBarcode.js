@@ -23,7 +23,7 @@ import {
   NxtText,
   RenderInput,
 } from "../../../components/common";
-import { THEME_COLORS } from "../../../config/constants";
+import { BARE_URL, THEME_COLORS } from "../../../config/constants";
 import { colors } from "./../../../models/ColorModel";
 import PrintBarcodes from "./PrintBarcodes";
 const BarcodeImg = require("../../../assets/barcode.png");
@@ -122,6 +122,17 @@ const ProductBarcode = ({
     startTransition(false);
   };
 
+  const getProductImg = (item) => {
+    const img = JSON.parse(item.Product.product_images)[0];
+
+    if (img) {
+      return `${BARE_URL}/files/${img}`
+    } else {
+      return null;
+    }
+
+  }
+
   return (
     <>
       <Box p={2}>
@@ -198,12 +209,18 @@ const ProductBarcode = ({
                       ariaLabel={`${item.productId}`}
                     />
                   )}
-                  <Image
+                  {getProductImg(item) ? <Image
+                    src={getProductImg(item)}
+                    width={20}
+                    height={10}
+                    alt="barcode"
+                  /> : <Image
                     source={BarcodeImg}
                     width={20}
                     height={10}
                     alt="barcode"
-                  />
+                  />}
+
 
                   <NxtText fontSize={11} text={item.productId} />
                   <NxtText

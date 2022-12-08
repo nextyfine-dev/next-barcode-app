@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { Box, HStack } from "native-base";
 import { useEffect, useState } from "react";
 // import Spinner from "react-native-loading-spinner-overlay";
@@ -17,7 +18,6 @@ import ProductBarcode from "./ProductBarcode";
 export default function BarCodes({
   refreshing,
   navigation,
-  route,
   type,
   setSelectedProducts,
   isCustomer,
@@ -31,6 +31,8 @@ export default function BarCodes({
   const [sortType, setSortType] = useState("DESC");
 
   const [showToast] = useNxtToast();
+
+  const isFocused = useIsFocused();
 
   const getAllDetails = async (
     page = currentPage,
@@ -77,7 +79,7 @@ export default function BarCodes({
     currentLimit,
     sortBy,
     sortType,
-    navigation.isFocused(),
+    isFocused,
   ]);
 
   const changePage = (type) => {

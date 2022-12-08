@@ -19,3 +19,9 @@ export const getProductBarCodes = catchAsync(
     return data;
   }
 );
+
+
+export const deleteProduct = catchAsync(async (id) => {
+  const { data } = await http.delete(`/product/delete/${id}`)
+  return data;
+})

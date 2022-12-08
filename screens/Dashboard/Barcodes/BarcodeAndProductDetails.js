@@ -6,6 +6,11 @@ import omit from "lodash/omit";
 export default function BarcodeAndProductDetails({ route, navigation }) {
   const { detail, isCustomer } = route.params;
 
+  const [customer, setCustomer] = useState(null);
+  const [cProducts, setCproducts] = useState(null);
+  const [product, setProduct] = useState(null);
+
+
   const [data, setData] = useState({
     params: { data: { file: {} }, isCustomer },
   });
@@ -21,10 +26,12 @@ export default function BarcodeAndProductDetails({ route, navigation }) {
     }
   }, [detail]);
 
+
+
   return (
     <>
-      <ShowCreatedBarcode route={data} navigation={navigation} />
-      <BarcodeDetails data={detail.Product || detail} />
+      <ShowCreatedBarcode route={data} navigation={navigation} customer={customer} cProducts={cProducts} product={product} />
+      <BarcodeDetails data={detail.Product || detail} setCustomerDetail={setCustomer} setCproductsDetail={setCproducts} setProductDetail={setProduct} />
     </>
   );
 }

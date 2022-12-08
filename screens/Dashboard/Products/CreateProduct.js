@@ -88,7 +88,7 @@ export default function CreateProduct({ navigation }) {
         showToast("success", res.message);
         setValues(initialValues);
         setTimeout(() => {
-          navigation.navigate("ShowCreatedBarcode", { data: res.data });
+          navigation.navigate("ShowCreatedBarcode", { data: res.data, isCreated: true });
         }, 500);
       } else {
         startTransition(false);

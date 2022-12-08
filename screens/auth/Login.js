@@ -94,8 +94,8 @@ const Login = ({ route, navigation }) => {
         <VStack space={3} mt="5">
           <NxtInput
             type={"text"}
-            label="Email or Username"
-            placeholder="Enter your email or username"
+            label="Email or Username or Phone Number"
+            placeholder="Enter your email or username or phone number"
             name="unameMail"
             handleBlur={handleBlur}
             handleChange={handleChange}

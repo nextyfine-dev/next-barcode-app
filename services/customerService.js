@@ -19,3 +19,8 @@ export const getAllCustomers = catchAsync(
     return data;
   }
 );
+
+export const deleteCustomer = catchAsync(async (id) => {
+  const { data } = await http.delete(`/customer/delete/${id}`)
+  return data;
+})

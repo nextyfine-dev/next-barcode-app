@@ -39,6 +39,7 @@ import ShowCreatedBarcode from "../screens/Dashboard/Barcodes/ShowCreatedBarcode
 import BarcodeAndProductDetails from "../screens/Dashboard/Barcodes/BarcodeAndProductDetails";
 import History from "../screens/Dashboard/History";
 import CreateCustomer from "../screens/Dashboard/Customer/CreateCustomer";
+import UpdateCustomer from "../screens/Dashboard/Customer/UpdateCustomer";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -251,6 +252,11 @@ const Navigation = () => {
           <Stack.Screen
             name="BarcodeAndProductDetails"
             component={BarcodeAndProductDetails}
+            options={defaultNavOptions()}
+          />
+          <Stack.Screen
+            name="UpdateCustomer"
+            component={UpdateCustomer}
             options={defaultNavOptions()}
           />
         </Stack.Navigator>

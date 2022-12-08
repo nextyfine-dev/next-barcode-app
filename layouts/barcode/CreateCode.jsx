@@ -21,7 +21,10 @@ export default function CreateCode({ navigation }) {
             <NxtText text={"New Product"} alignSelf="center" />
           </NxtCard>
         </Pressable>
-        <Pressable width="45%">
+        <Pressable
+          width="45%"
+          onPress={() => navigation.navigate("CreateCustomer")}
+        >
           <NxtCard>
             <Icon
               mb="1"

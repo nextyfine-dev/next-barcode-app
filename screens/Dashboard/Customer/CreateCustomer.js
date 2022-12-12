@@ -27,10 +27,10 @@ import useNxtToast from "../../../hooks/useNxtToast";
 import { validationSchema, initialValues } from "../../../models/CustomerModel";
 import Spinner from "react-native-loading-spinner-overlay";
 import { filterValues } from "../../../services/filterService";
-import { createCustomer } from "../../../services/customerService";
+import { createCustomer, updateCustomer } from "../../../services/customerService";
 import { useIsFocused } from "@react-navigation/native";
 
-const CreateCustomer = ({ navigation, isUpdate, customer, cProducts }) => {
+const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId }) => {
   const [isSelectProduct, setIsSelectProduct] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
@@ -82,6 +82,7 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts }) => {
   };
 
   const handleSubmit = async () => {
+    startTransition(true);
     const isError = validateValues();
     if (isError) {
       showToast("error", isError);
@@ -89,7 +90,6 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts }) => {
       let newValues = filterValues(values);
       let productIds;
       if (selectedProducts && selectedProducts.length > 0) {
-        console.log('productIds :>> ', productIds);
         productIds = selectedProducts.map((product) => product.productId);
       }
       newValues = {
@@ -112,7 +112,17 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts }) => {
           showToast("error", res.message);
         }
       } else {
-        console.log('newValues :>> ', newValues);
+        const res = await updateCustomer(customerId, newValues);
+        if (res && res.status === "success") {
+          startTransition(false);
+          showToast("success", res.message);
+          setTimeout(() => {
+            navigation.navigate("Home");
+          }, 500);
+        } else {
+          startTransition(false);
+          showToast("error", res.message);
+        }
       }
 
 

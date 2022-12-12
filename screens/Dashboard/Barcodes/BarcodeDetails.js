@@ -148,7 +148,7 @@ export default function BarcodeDetails({ setData, data, setCustomerDetail, setCp
                   <VStack
                     key={i}
                     mt={2}
-                    onTouchStart={() => setIsDisabled(false)}
+                    // onTouchStart={() => setIsDisabled(false)}
                   >
                     <NxtFormLabel label={key.capitalize()} />
                     <Input
@@ -158,7 +158,7 @@ export default function BarcodeDetails({ setData, data, setCustomerDetail, setCp
                       bg="#fff"
                       // onKeyPress={}
                       isDisabled={isDisabled}
-                      onBlur={() => setIsDisabled(true)}
+                      
                     />
                   </VStack>
                 )
@@ -176,7 +176,7 @@ export default function BarcodeDetails({ setData, data, setCustomerDetail, setCp
               bg="#fff"
               // onKeyPress={}
               isDisabled={isDisabled}
-              onBlur={() => setIsDisabled(true)}
+              
             />
           </VStack>)}
           {cProducts && <VStack mt={5}>

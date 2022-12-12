@@ -19,7 +19,7 @@ export const getAccess = async () => {
       PERMISSIONS.ANDROID.RECORD_AUDIO,
     ]);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return BackHandler.exitApp();
   }
 };

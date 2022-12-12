@@ -14,7 +14,7 @@ export const USER_ROLE = {
 };
 
 export const BARE_URL = "https://next-barcode.nextyfine.com";
-// export const BARE_URL = "http://192.168.0.104:4040";
+// export const BARE_URL = "http://192.168.84.133:4040";
 
 export const API_URLS = {
   development: `${BARE_URL}/api/v1`,

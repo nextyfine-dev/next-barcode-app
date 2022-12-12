@@ -124,7 +124,8 @@ export default function ShowCreatedBarcode({ route, navigation, customer, cProdu
                 : navigation.navigate("UpdateCustomer", {
                   isUpdate: true,
                   cProducts,
-                  customer
+                  customer,
+                  customerId: data.file.customerId
                 })}
               bg={"blue.500"}
               m={1}

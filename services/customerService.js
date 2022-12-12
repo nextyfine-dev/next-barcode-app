@@ -20,6 +20,11 @@ export const getAllCustomers = catchAsync(
   }
 );
 
+export const updateCustomer = catchAsync(async (customerId, values) => {
+  const { data } = await http.put(`customer/update/${customerId}`, values)
+  return data;
+})
+
 export const deleteCustomer = catchAsync(async (id) => {
   const { data } = await http.delete(`/customer/delete/${id}`)
   return data;

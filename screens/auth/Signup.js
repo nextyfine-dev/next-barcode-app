@@ -48,7 +48,7 @@ const Signup = ({ route, navigation }) => {
         if (res.status === "success") {
           showToast("success", res.message);
 
-          USER_ROLE.ADMIN
+          res.userRole === USER_ROLE.ADMIN
             ? navigation.navigate("Otp", { role })
             : navigation.navigate("Login", { role });
         } else {

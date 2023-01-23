@@ -1,10 +1,8 @@
 import {
   Box,
   Center,
-  HStack,
   Icon,
   Input,
-  InputGroup,
   ScrollView,
   VStack,
 } from "native-base";
@@ -15,13 +13,12 @@ import {
   NxtButton,
   NxtCard,
   NxtFormLabel,
-  NxtText,
 } from "../../../components/common";
 import { THEME_COLORS } from "../../../config/constants";
 import { logOut } from "../../../services/authService";
 import { clearAuthState } from "../../../redux/reducers/authSlice";
 
-export default function Account({ navigation }) {
+export default function Account() {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 

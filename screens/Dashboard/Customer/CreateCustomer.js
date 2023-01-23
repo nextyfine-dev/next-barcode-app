@@ -85,6 +85,8 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
     startTransition(true);
     const isError = validateValues();
     if (isError) {
+      startTransition(false);
+
       showToast("error", isError);
     } else {
       let newValues = filterValues(values);

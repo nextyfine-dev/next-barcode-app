@@ -71,7 +71,7 @@ export default function Scanner() {
       {!refreshing && <View safeArea height={data ? "100%" : SCREEN_HEIGHT - 135} >
         {!data ? (
           <Camera
-            // ratio={"4:3"}
+            ratio={"4:3"}
             focusable={true}
             onBarCodeScanned={(res) => {
               setData(res);

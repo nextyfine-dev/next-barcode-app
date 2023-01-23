@@ -123,7 +123,7 @@ const ProductBarcode = ({
   };
 
   const getProductImg = (item) => {
-    const img = JSON.parse(item.Product.product_images)[0];
+    const img = item?.Product?.product_images && JSON.parse(item.Product.product_images)[0];
 
     if (img) {
       return `${BARE_URL}/files/${img}`

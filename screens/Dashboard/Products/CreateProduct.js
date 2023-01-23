@@ -1,4 +1,13 @@
-import { Center, HStack, Image, ScrollView, VStack } from "native-base";
+import {
+  Center,
+  HStack,
+  Icon,
+  IconButton,
+  Image,
+  ScrollView,
+  View,
+  VStack,
+} from "native-base";
 
 import {
   NxtButton,
@@ -8,6 +17,7 @@ import {
 } from "../../../components/common";
 import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { initialValues, validationSchema } from "../../../models/productModel";
 import useNxtToast from "../../../hooks/useNxtToast";
 import { filterValues } from "../../../services/filterService";
@@ -55,6 +65,15 @@ export default function CreateProduct({ navigation }) {
       }));
     }
   };
+
+  const removeFromSelection = (index) => {
+    const product_images = [...values.product_images];
+    product_images.splice(index, 1);
+    setValues((prev) => ({
+      ...prev,
+      product_images,
+    }));
+  };
   const handleChange = (value, name) => {
     setValues((prev) => {
       const data = { ...prev };
@@ -88,7 +107,10 @@ export default function CreateProduct({ navigation }) {
         showToast("success", res.message);
         setValues(initialValues);
         setTimeout(() => {
-          navigation.navigate("ShowCreatedBarcode", { data: res.data, isCreated: true });
+          navigation.navigate("ShowCreatedBarcode", {
+            data: res.data,
+            isCreated: true,
+          });
         }, 500);
       } else {
         startTransition(false);
@@ -110,18 +132,50 @@ export default function CreateProduct({ navigation }) {
           <VStack mt={4} space={4}>
             <NxtButton text={"Select photo"} onPress={pickImage} />
             {values.product_images && values.product_images.length > 0 && (
-              <HStack space={3} flexWrap="wrap" flexDirection="row">
-                {values.product_images.map((img, i) => (
-                  <Center key={i} mt={2}>
-                    <Image
-                      source={{ uri: img.uri }}
-                      w={100}
-                      h={100}
-                      alt="product image"
-                    />
-                  </Center>
-                ))}
-              </HStack>
+              <Center>
+                <HStack
+                  alignItems={"center"}
+                  flexWrap="wrap"
+                  flexDirection="row"
+                >
+                  {values.product_images.map((img, i) => (
+                    <View
+                      key={i}
+                      justifyContent={"center"}
+                      borderRadius={5}
+                      height={160}
+                      alignItems={"center"}
+                      alignSelf="center"
+                      shadow={9}
+                      width={150}
+                      m={1}
+                      bgColor={"#fff"}
+                      pt={2}
+                      pb={10}
+                    >
+                      <IconButton
+                        alignSelf="flex-end"
+                        onPress={() => removeFromSelection(i)}
+                        icon={
+                          <Icon
+                            as={<Ionicons />}
+                            name={"close-circle"}
+                            size={25}
+                            color={"red.400"}
+                            mt={2}
+                          />
+                        }
+                      />
+                      <Image
+                        source={{ uri: img.uri }}
+                        w={110}
+                        h={110}
+                        alt="product image"
+                      />
+                    </View>
+                  ))}
+                </HStack>
+              </Center>
             )}
             <RenderInput
               label={"Name"}

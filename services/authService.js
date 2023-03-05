@@ -32,3 +32,8 @@ export const jwtLogin = catchAsync(async (token) => {
 });
 
 export const logOut = catchAsync(async () => removeFromStorage("@token"));
+
+export const updatePass = catchAsync(async (values) => {
+  const { data } = await http.patch("/auth/password", values);
+  return data;
+});

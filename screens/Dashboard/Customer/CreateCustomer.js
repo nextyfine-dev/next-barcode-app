@@ -27,10 +27,19 @@ import useNxtToast from "../../../hooks/useNxtToast";
 import { validationSchema, initialValues } from "../../../models/CustomerModel";
 import Spinner from "react-native-loading-spinner-overlay";
 import { filterValues } from "../../../services/filterService";
-import { createCustomer, updateCustomer } from "../../../services/customerService";
+import {
+  createCustomer,
+  updateCustomer,
+} from "../../../services/customerService";
 import { useIsFocused } from "@react-navigation/native";
 
-const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId }) => {
+const CreateCustomer = ({
+  navigation,
+  isUpdate,
+  customer,
+  cProducts,
+  customerId,
+}) => {
   const [isSelectProduct, setIsSelectProduct] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState([]);
 
@@ -38,8 +47,7 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
   const [values, setValues] = useState(initialValues);
   const [isPending, startTransition] = useState(false);
 
-
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
 
   const validateValues = () => {
     for (const key in validationSchema) {
@@ -52,14 +60,13 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
 
   useEffect(() => {
     if (isUpdate && isFocused) {
-      setSelectedProducts(cProducts)
-      setValues({ ...customer, productIds: JSON.parse(customer.productIds) })
+      setSelectedProducts(cProducts);
+      setValues({ ...customer, productIds: JSON.parse(customer.productIds) });
     } else {
-      setSelectedProducts([])
-      setValues(initialValues)
+      setSelectedProducts([]);
+      setValues(initialValues);
     }
-  }, [isFocused, isUpdate])
-
+  }, [isFocused, isUpdate]);
 
   useEffect(() => {
     if (selectedProducts && selectedProducts.length > 0) {
@@ -107,7 +114,11 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
           setValues(initialValues);
           const data = { ...res.data, file: res.data.customer };
           setTimeout(() => {
-            navigation.navigate("ShowCreatedBarcode", { data, isCustomer: true, isCreated: true });
+            navigation.navigate("ShowCreatedBarcode", {
+              data,
+              isCustomer: true,
+              isCreated: true,
+            });
           }, 500);
         } else {
           startTransition(false);
@@ -126,8 +137,6 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
           showToast("error", res.message);
         }
       }
-
-
     }
   };
 
@@ -136,11 +145,20 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
       <Center>
         <Spinner
           visible={isPending}
-          textContent={!isUpdate ? "Creating Customer and Barcode... " : "Updating customer..."}
+          textContent={
+            !isUpdate
+              ? "Creating Customer and Barcode... "
+              : "Updating customer..."
+          }
           textStyle={{ color: "#fff" }}
         />
         <NxtCard mt={5} pb={5} mb={8}>
-          <NxtHeading text={!isUpdate ? "Create a New Customer" : "Update Customer Details"} textAlign="center" />
+          <NxtHeading
+            text={
+              !isUpdate ? "Create a New Customer" : "Update Customer Details"
+            }
+            textAlign="center"
+          />
 
           <VStack mt={4} space={4}>
             <RenderInput
@@ -157,8 +175,12 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
               value={values["phoneNumber"]}
               placeholder="Enter customer's mobile number"
             />
-            <RenderInput label={"Email"} placeholder="Enter customer's email" onChangeText={(value) => handleChange(value, "email")}
-              value={values["email"]} />
+            <RenderInput
+              label={"Email"}
+              placeholder="Enter customer's email"
+              onChangeText={(value) => handleChange(value, "email")}
+              value={values["email"]}
+            />
             <NxtButton
               text="Select Product"
               onPress={() => setIsSelectProduct(true)}
@@ -236,7 +258,10 @@ const CreateCustomer = ({ navigation, isUpdate, customer, cProducts, customerId 
               value={values["details"]}
               placeholder={"Enter more details"}
             />
-            <NxtButton text={!isUpdate ? "Create Customer Barcode" : "Update Customer"} onPress={handleSubmit} />
+            <NxtButton
+              text={!isUpdate ? "Create Customer Barcode" : "Update Customer"}
+              onPress={handleSubmit}
+            />
           </VStack>
         </NxtCard>
       </Center>

@@ -16,28 +16,45 @@ import {
   RenderInput,
 } from "../../../components/common";
 import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { initialValues, validationSchema } from "../../../models/productModel";
 import useNxtToast from "../../../hooks/useNxtToast";
 import { filterValues } from "../../../services/filterService";
-import { createProductBarcode } from "../../../services/productService";
+import {
+  createProductBarcode,
+  updateProduct,
+} from "../../../services/productService";
 import * as FileSystem from "expo-file-system";
 import Spinner from "react-native-loading-spinner-overlay";
+import { useIsFocused } from "@react-navigation/native";
+import { BARE_URL } from "../../../config/constants";
+import { validateValues } from "../../../services";
 
-export default function CreateProduct({ navigation }) {
+export default function CreateProduct({
+  navigation,
+  isUpdate,
+  product,
+  productId,
+}) {
   const [showToast] = useNxtToast();
   const [values, setValues] = useState(initialValues);
   const [isPending, startTransition] = useState(false);
 
-  const validateValues = () => {
-    for (const key in validationSchema) {
-      if (!validationSchema[key].allowNull && values[key].length === 0) {
-        return validationSchema[key].message;
-      }
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused && isUpdate && productId) {
+      setValues({
+        ...product,
+        product_images: JSON.parse(product.product_images),
+        productId: undefined,
+      });
     }
-    return false;
-  };
+    return () => {
+      setValues(initialValues);
+    };
+  }, [isFocused, isUpdate, productId]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -84,34 +101,47 @@ export default function CreateProduct({ navigation }) {
 
   const handleSubmit = async () => {
     startTransition(true);
-    const isError = validateValues();
+    const isError = validateValues(validationSchema, values);
     if (isError) {
       startTransition(false);
       showToast("error", isError);
     } else {
       const newValues = filterValues(values);
       const fd = new FormData();
+      const previous_images = [];
       for (const key in newValues) {
         // fd.append(key, newValues[key]);
         if (key === "product_images") {
           for (const img of newValues[key]) {
-            fd.append("product_images", img);
+            if (typeof img === "string") {
+              previous_images.push(img);
+            } else {
+              fd.append("product_images", img);
+            }
           }
         } else {
           fd.append(key, newValues[key]);
         }
       }
-      const res = await createProductBarcode(fd);
+      isUpdate && fd.append("previous_images", previous_images);
+      const res = !isUpdate
+        ? await createProductBarcode(fd)
+        : await updateProduct(productId, fd);
+
       startTransition(false);
       if (res && res.status === "success") {
         showToast("success", res.message);
         setValues(initialValues);
         setTimeout(() => {
-          navigation.navigate("ShowCreatedBarcode", {
-            data: res.data,
-            isCreated: true,
-          });
-        }, 500);
+          if (isUpdate) {
+            navigation.navigate("Home");
+          } else {
+            navigation.navigate("ShowCreatedBarcode", {
+              data: res.data,
+              isCreated: true,
+            });
+          }
+        }, 600);
       } else {
         startTransition(false);
         showToast("error", res.message);
@@ -124,11 +154,18 @@ export default function CreateProduct({ navigation }) {
       <Center>
         <Spinner
           visible={isPending}
-          textContent={"Creating Product and Barcode... "}
+          textContent={
+            isUpdate
+              ? "Updating Product and Barcode... "
+              : "Creating Product and Barcode... "
+          }
           textStyle={{ color: "#fff" }}
         />
         <NxtCard mt={5} pb={5} mb={8}>
-          <NxtHeading text={"Create a new product"} textAlign="center" />
+          <NxtHeading
+            text={isUpdate ? "Update product" : "Create a new product"}
+            textAlign="center"
+          />
           <VStack mt={4} space={4}>
             <NxtButton text={"Select photo"} onPress={pickImage} />
             {values.product_images && values.product_images.length > 0 && (
@@ -167,7 +204,7 @@ export default function CreateProduct({ navigation }) {
                         }
                       />
                       <Image
-                        source={{ uri: img.uri }}
+                        source={{ uri: img.uri || `${BARE_URL}/files/${img}` }}
                         w={110}
                         h={110}
                         alt="product image"
@@ -216,7 +253,12 @@ export default function CreateProduct({ navigation }) {
               onChangeText={(value) => handleChange(value, "details")}
               value={values["details"]}
             />
-            <NxtButton text="Create product barcode" onPress={handleSubmit} />
+            <NxtButton
+              text={
+                isUpdate ? "Update product barcode" : "Create product barcode"
+              }
+              onPress={handleSubmit}
+            />
           </VStack>
         </NxtCard>
       </Center>

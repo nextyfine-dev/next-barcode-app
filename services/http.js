@@ -25,9 +25,9 @@ axios.interceptors.response.use(null, (error) => {
     error.response.status >= 400 &&
     error.response.status < 500;
 
-  if (!expectedError) {
-    console.log("Error", error);
-  }
+  // if (!expectedError) {
+  //   return Promise.reject(error);
+  // }
 
   return Promise.reject(error);
 });

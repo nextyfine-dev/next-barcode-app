@@ -26,6 +26,8 @@ import {
 import { BARE_URL, THEME_COLORS } from "../../../config/constants";
 import { colors } from "./../../../models/ColorModel";
 import PrintBarcodes from "./PrintBarcodes";
+// import { deleteProduct } from "../../../services/productService";
+import useNxtToast from "../../../hooks/useNxtToast";
 const BarcodeImg = require("../../../assets/barcode.png");
 
 const ProductBarcode = ({
@@ -39,6 +41,7 @@ const ProductBarcode = ({
   type,
   setSelectedProducts,
   setCurrentLimit,
+  onRefresh,
 }) => {
   const [selectedItem, setSelectedItem] = useState([]);
   const [isSelecting, setIsSelecting] = useState(false);
@@ -54,6 +57,7 @@ const ProductBarcode = ({
   ]);
   const [limitValue, setLimitValue] = useState("10");
   const [isPrinting, setIsPrinting] = useState(false);
+  // const [showToast] = useNxtToast();
 
   const addToSelectItem = (item) => {
     const allItems = [...selectedItem];
@@ -123,15 +127,26 @@ const ProductBarcode = ({
   };
 
   const getProductImg = (item) => {
-    const img = item?.Product?.product_images && JSON.parse(item.Product.product_images)[0];
+    const product_images =
+      item?.Product?.product_images || item?.product_images;
 
-    if (img) {
-      return `${BARE_URL}/files/${img}`
+    let img =
+      product_images &&
+      (typeof product_images === "string"
+        ? product_images
+        : typeof product_images === "object" &&
+          JSON.parse(item.Product.product_images)[0]);
+
+    if (img && img.length > 2) {
+      if (img.startsWith("[")) {
+        img = JSON.parse(img);
+        return `${BARE_URL}/files/${img[0]}`;
+      }
+      return `${BARE_URL}/files/${img}`;
     } else {
       return null;
     }
-
-  }
+  };
 
   return (
     <>
@@ -209,18 +224,21 @@ const ProductBarcode = ({
                       ariaLabel={`${item.productId}`}
                     />
                   )}
-                  {getProductImg(item) ? <Image
-                    src={getProductImg(item)}
-                    width={20}
-                    height={10}
-                    alt="barcode"
-                  /> : <Image
-                    source={BarcodeImg}
-                    width={20}
-                    height={10}
-                    alt="barcode"
-                  />}
-
+                  {getProductImg(item) ? (
+                    <Image
+                      src={getProductImg(item)}
+                      width={20}
+                      height={10}
+                      alt="barcode"
+                    />
+                  ) : (
+                    <Image
+                      source={BarcodeImg}
+                      width={20}
+                      height={10}
+                      alt="barcode"
+                    />
+                  )}
 
                   <NxtText fontSize={11} text={item.productId} />
                   <NxtText
@@ -295,6 +313,32 @@ const ProductBarcode = ({
                       bg="green.500"
                     />
                   )}
+
+                  {/* {selectedItem.length > 0 && (
+                    <NxtButton
+                      m={1}
+                      text={"Delete"}
+                      onPress={async () => {
+                        startTransition(true);
+
+                        for (const item of selectedItem) {
+                          const { productId } = item.Product;
+                          const res = await deleteProduct(productId);
+
+                          if (res && res.status === "success") {
+                            startTransition(false);
+                            showToast("success", res.message);
+                          } else {
+                            startTransition(false);
+                            showToast("error", res.message);
+                          }
+
+                          onRefresh();
+                        }
+                      }}
+                      bg="red.500"
+                    />
+                  )} */}
 
                   <NxtButton
                     m={1}

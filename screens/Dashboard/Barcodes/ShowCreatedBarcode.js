@@ -11,7 +11,13 @@ import useNxtToast from "../../../hooks/useNxtToast";
 import { deleteCustomer } from "../../../services/customerService";
 const BarcodeImg = require("./../../../assets/barcode.png");
 
-export default function ShowCreatedBarcode({ route, navigation, customer, cProducts, product }) {
+export default function ShowCreatedBarcode({
+  route,
+  navigation,
+  customer,
+  cProducts,
+  product,
+}) {
   const [isPending, startTransition] = useState(false);
   const [showToast] = useNxtToast();
 
@@ -32,8 +38,9 @@ export default function ShowCreatedBarcode({ route, navigation, customer, cProdu
   const printToFile = async () => {
     startTransition(true);
     const { uri } = await Print.printToFileAsync({ html });
-    const pdfName = `${uri.slice(0, uri.lastIndexOf("/") + 1)}${data.file.productId || data.file.customerId
-      }-${data.file.name}.pdf`;
+    const pdfName = `${uri.slice(0, uri.lastIndexOf("/") + 1)}${
+      data.file.productId || data.file.customerId
+    }-${data.file.name}.pdf`;
 
     await FileSystem.moveAsync({
       from: uri,
@@ -50,28 +57,27 @@ export default function ShowCreatedBarcode({ route, navigation, customer, cProdu
 
   const showResMsg = (res) => {
     if (res && res.status === "success") {
-      startTransition(false)
+      startTransition(false);
       showToast("success", res.message);
       setTimeout(() => {
-        navigation.navigate("Home")
+        navigation.navigate("Home");
       }, 1000);
     } else {
-      startTransition(false)
+      startTransition(false);
       showToast("error", res.message);
     }
-  }
+  };
 
   const deleteBarcode = async (id, type = "product") => {
-    startTransition(true)
+    startTransition(true);
     if (type === "product") {
       const res = await deleteProduct(id);
-      showResMsg(res)
+      showResMsg(res);
     } else if (type === "customer") {
       const res = await deleteCustomer(id);
-      showResMsg(res)
-
+      showResMsg(res);
     }
-  }
+  };
 
   return (
     <Box>
@@ -115,30 +121,40 @@ export default function ShowCreatedBarcode({ route, navigation, customer, cProdu
               bg={"yellow.500"}
               m={1}
             />
-            {!isCreated && <NxtButton
-              text={isCustomer ? "Update Customer" : "Update Product"}
-              onPress={async () => !isCustomer ? navigation.navigate("CreateBarcode", {
-                isUpdate: true,
-                product
-              })
-                : navigation.navigate("UpdateCustomer", {
-                  isUpdate: true,
-                  cProducts,
-                  customer,
-                  customerId: data.file.customerId
-                })}
-              bg={"blue.500"}
-              m={1}
-            />}
+            {!isCreated && (
+              <NxtButton
+                text={isCustomer ? "Update Customer" : "Update Product"}
+                onPress={async () =>
+                  !isCustomer
+                    ? navigation.navigate("UpdateProduct", {
+                        isUpdate: true,
+                        product,
+                        productId: data.file.productId,
+                      })
+                    : navigation.navigate("UpdateCustomer", {
+                        isUpdate: true,
+                        cProducts,
+                        customer,
+                        customerId: data.file.customerId,
+                      })
+                }
+                bg={"blue.500"}
+                m={1}
+              />
+            )}
 
-            {!isCreated && <NxtButton
-              text={isCustomer ? "Delete Customer" : "Delete Product"}
-              onPress={async () => isCustomer ? await deleteBarcode(data.file.customerId, "customer") : await deleteBarcode(data.file.productId)}
-              bg={"red.500"}
-              m={1}
-            />}
-
-
+            {!isCreated && (
+              <NxtButton
+                text={isCustomer ? "Delete Customer" : "Delete Product"}
+                onPress={async () =>
+                  isCustomer
+                    ? await deleteBarcode(data.file.customerId, "customer")
+                    : await deleteBarcode(data.file.productId)
+                }
+                bg={"red.500"}
+                m={1}
+              />
+            )}
           </HStack>
         </Center>
       )}

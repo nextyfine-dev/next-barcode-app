@@ -21,6 +21,7 @@ export default function BarCodes({
   type,
   setSelectedProducts,
   isCustomer,
+  onRefresh,
 }) {
   const [data, setData] = useState(null);
   const [searchValue, setSearchValue] = useState("");
@@ -71,16 +72,11 @@ export default function BarCodes({
   };
 
   useEffect(() => {
-    getAllDetails(currentPage, currentLimit, sortBy, sortType);
-    setSearchValue("");
-  }, [
-    refreshing,
-    currentPage,
-    currentLimit,
-    sortBy,
-    sortType,
-    isFocused,
-  ]);
+    if (isFocused) {
+      getAllDetails(currentPage, currentLimit, sortBy, sortType);
+      setSearchValue("");
+    }
+  }, [refreshing, currentPage, currentLimit, sortBy, sortType, isFocused]);
 
   const changePage = (type) => {
     if (type === "Next") {
@@ -106,6 +102,7 @@ export default function BarCodes({
           type={type}
           setSelectedProducts={setSelectedProducts}
           setCurrentLimit={setCurrentLimit}
+          onRefresh={onRefresh}
         />
       )}
 

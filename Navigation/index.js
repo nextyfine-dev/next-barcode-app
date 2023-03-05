@@ -37,9 +37,10 @@ import Scanner from "../screens/Dashboard/Barcodes/Scanner";
 import CreateProduct from "../screens/Dashboard/Products/CreateProduct";
 import ShowCreatedBarcode from "../screens/Dashboard/Barcodes/ShowCreatedBarcode";
 import BarcodeAndProductDetails from "../screens/Dashboard/Barcodes/BarcodeAndProductDetails";
-import History from "../screens/Dashboard/History";
+// import History from "../screens/Dashboard/History";
 import CreateCustomer from "../screens/Dashboard/Customer/CreateCustomer";
 import UpdateCustomer from "../screens/Dashboard/Customer/UpdateCustomer";
+import UpdateProduct from "../screens/Dashboard/Products/UpdateProduct";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,6 +62,30 @@ function CustomDrawerContent({ props, navigation }) {
             <VStack space="3">
               <NxtDrawerBtn
                 text="Home"
+                onPress={() => navigation.navigate("Home")}
+              />
+            </VStack>
+
+            <VStack space="3">
+              <NxtDrawerBtn
+                text="Products"
+                iconName="local-mall"
+                onPress={() => navigation.navigate("Home")}
+              />
+            </VStack>
+
+            <VStack space="3">
+              <NxtDrawerBtn
+                text="Customers"
+                iconName="perm-contact-cal"
+                onPress={() => navigation.navigate("Home")}
+              />
+            </VStack>
+
+            <VStack space="3">
+              <NxtDrawerBtn
+                text="Employees"
+                iconName="quick-contacts-mail"
                 onPress={() => navigation.navigate("Home")}
               />
             </VStack>
@@ -257,6 +282,11 @@ const Navigation = () => {
           <Stack.Screen
             name="UpdateCustomer"
             component={UpdateCustomer}
+            options={defaultNavOptions()}
+          />
+          <Stack.Screen
+            name="UpdateProduct"
+            component={UpdateProduct}
             options={defaultNavOptions()}
           />
         </Stack.Navigator>

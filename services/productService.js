@@ -20,13 +20,12 @@ export const getProductBarCodes = catchAsync(
   }
 );
 
-
 export const updateProduct = catchAsync(async (productId, values) => {
   const { data } = await http.put(`/product/update/${productId}`, values);
   return data;
-})
+});
 
 export const deleteProduct = catchAsync(async (id) => {
-  const { data } = await http.delete(`/product/delete/${id}`)
+  const { data } = await http.delete(`/product/delete/${id}`);
   return data;
-})
+});

@@ -46,3 +46,27 @@ export const signUpValidationSchema = object().shape({
     then: string().required("Referral code is required!"),
   }),
 });
+
+export const updatePassInitialValues = {
+  oldPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+};
+
+export const passValidation = {
+  oldPassword: {
+    allowNull: false,
+    type: "string",
+    message: "Enter old password",
+  },
+  newPassword: {
+    allowNull: false,
+    type: "string",
+    message: "Enter new password",
+  },
+  confirmPassword: {
+    allowNull: false,
+    type: "string",
+    message: "Please confirm the password",
+  },
+};

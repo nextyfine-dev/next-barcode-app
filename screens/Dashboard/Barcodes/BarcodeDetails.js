@@ -218,7 +218,6 @@ export default function BarcodeDetails({
                   borderBottomWidth={cProducts.length - 1 !== index ? 1 : 0}
                   pb={5}
                 >
-                  {console.log("product", product)}
                   <NxtText text={`Product - ${index + 1} `} mt={4} />
 
                   {Object.keys(product).map(

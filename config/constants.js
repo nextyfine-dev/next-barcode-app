@@ -13,8 +13,8 @@ export const USER_ROLE = {
   EMPLOYEE: "employee",
 };
 
-export const BARE_URL = "https://next-barcode.nextyfine.com";
-// export const BARE_URL = "http://192.168.216.133:4040";
+// export const BARE_URL = "https://next-barcode.nextyfine.com";
+export const BARE_URL = "http://192.168.17.133:4040";
 
 export const API_URLS = {
   development: `${BARE_URL}/api/v1`,

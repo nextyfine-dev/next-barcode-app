@@ -30,6 +30,7 @@ export default function Home({ navigation }) {
             navigation={navigation}
             user={user}
             refreshing={refreshing}
+            onRefresh={onRefresh}
           />
         ) : (
           <EmployeeHome navigation={navigation} user={user} />

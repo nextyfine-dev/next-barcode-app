@@ -1,5 +1,4 @@
 import { Box, Divider } from "native-base";
-import { NxtText } from "../../../components/common";
 
 import CreateCode from "../../../layouts/barcode/CreateCode";
 import BarCodes from "../Barcodes";

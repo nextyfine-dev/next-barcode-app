@@ -37,3 +37,17 @@ export const updatePass = catchAsync(async (values) => {
   const { data } = await http.patch("/auth/password", values);
   return data;
 });
+
+export const getEmployees = catchAsync(async (values) => {
+  const { adminId, limit, page, sortType, sortBy } = values;
+
+  const { data } = await http.get(
+    `/employees?limit=${limit}&page=${page}&sortBy=${sortBy}&sortType=${sortType}&adminId=${adminId}`
+  );
+  return data;
+});
+
+export const getAdmin = catchAsync(async (adminId) => {
+  const { data } = await http.get(`/admin/${adminId}`);
+  return data;
+});

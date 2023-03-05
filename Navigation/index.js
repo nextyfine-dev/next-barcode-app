@@ -41,12 +41,18 @@ import BarcodeAndProductDetails from "../screens/Dashboard/Barcodes/BarcodeAndPr
 import CreateCustomer from "../screens/Dashboard/Customer/CreateCustomer";
 import UpdateCustomer from "../screens/Dashboard/Customer/UpdateCustomer";
 import UpdateProduct from "../screens/Dashboard/Products/UpdateProduct";
+import Products from "../screens/Dashboard/Products";
+import Customer from "../screens/Dashboard/Customer";
+import Employees from "../screens/Dashboard/Home/Employees";
+import Admin from "../screens/Dashboard/Home/Admin";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent({ props, navigation }) {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <DrawerContentScrollView {...props} safeArea>
       <VStack space="6" my="2" mx="1">
@@ -70,7 +76,7 @@ function CustomDrawerContent({ props, navigation }) {
               <NxtDrawerBtn
                 text="Products"
                 iconName="local-mall"
-                onPress={() => navigation.navigate("Home")}
+                onPress={() => navigation.navigate("Products")}
               />
             </VStack>
 
@@ -78,17 +84,29 @@ function CustomDrawerContent({ props, navigation }) {
               <NxtDrawerBtn
                 text="Customers"
                 iconName="perm-contact-cal"
-                onPress={() => navigation.navigate("Home")}
+                onPress={() => navigation.navigate("Customers")}
               />
             </VStack>
 
-            <VStack space="3">
-              <NxtDrawerBtn
-                text="Employees"
-                iconName="quick-contacts-mail"
-                onPress={() => navigation.navigate("Home")}
-              />
-            </VStack>
+            {user.userRole === "admin" && (
+              <VStack space="3">
+                <NxtDrawerBtn
+                  text="Employees"
+                  iconName="quick-contacts-mail"
+                  onPress={() => navigation.navigate("Employees")}
+                />
+              </VStack>
+            )}
+
+            {user.userRole === "employee" && (
+              <VStack space="3">
+                <NxtDrawerBtn
+                  text="Your Admin"
+                  iconName="quick-contacts-mail"
+                  onPress={() => navigation.navigate("Admin")}
+                />
+              </VStack>
+            )}
 
             {/* <VStack space="3">
               <NxtDrawerBtn
@@ -289,6 +307,10 @@ const Navigation = () => {
             component={UpdateProduct}
             options={defaultNavOptions()}
           />
+          <Stack.Screen name="Products" component={Products} />
+          <Stack.Screen name="Customers" component={Customer} />
+          <Stack.Screen name="Employees" component={Employees} />
+          <Stack.Screen name="Admin" component={Admin} />
         </Stack.Navigator>
       )}
     </NavigationContainer>

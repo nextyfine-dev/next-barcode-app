@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Box, ScrollView } from "native-base";
 import { useSelector } from "react-redux";
 import { RefreshControl } from "react-native";

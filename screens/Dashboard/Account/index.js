@@ -83,6 +83,7 @@ export default function Account() {
                   "updatedAt",
                   "userRole",
                   "password",
+                  "employeeId"
                 ])
               ).map((u, i) => (
                 <VStack key={i} mt={2}>

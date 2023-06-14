@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React from "react";
 import { Provider } from "react-redux";
 import { NativeBaseProvider, StatusBar } from "native-base";
 
@@ -18,4 +18,3 @@ export default function App() {
     </Provider>
   );
 }
-// jf2JGHLXffXtz7CG88M7

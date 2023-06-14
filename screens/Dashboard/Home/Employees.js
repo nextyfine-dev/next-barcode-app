@@ -98,7 +98,7 @@ const Employees = () => {
       <Box p={4}>
         {data && data.count > 10 && (
           <HStack width={"90%"}>
-            <RenderInput bg={"#fff"} placeholder={"Search product"} />
+            <RenderInput bg={"#fff"} placeholder={"Search Employee"} />
             <IconButton
               mt={8}
               m={1}
@@ -130,12 +130,14 @@ const Employees = () => {
               borderColor={"blue.200"}
               p={10}
               bgColor={"#fff"}
+              width={"90%"}
+              mt={4}
 
             >
               <Icon
                 alignSelf="center"
                 as={<FontAwesome name="user-circle-o" />}
-                size={30}
+                size={45}
                 color={THEME_COLORS.PRIMARY_COLOR}
               />
               <Text>Name: {e.fullName}</Text>
